@@ -9,6 +9,10 @@ const COLOR_OPTIONS = [
   "#8DC6BF", // teal
   "#FCBC66", // gold
   "#F97B4F", // coral
+  "#FF7F50", // coral claro
+  "#9B59B6", // morado
+  "#2ECC71", // verde
+  "#3DA5F4", // azul
 ];
 
 const DAY_MS = 24 * 60 * 60 * 1000;
