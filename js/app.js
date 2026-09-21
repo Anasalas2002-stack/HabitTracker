@@ -1,17 +1,18 @@
 /* ===================== CONSTANTS ===================== */
-const STORAGE_KEY = "habitbox_habits_v1";
+const STORAGE_KEY = "habittracker_habits_v1";
 
 const ICON_OPTIONS = ["🏃", "🧘", "📖", "💧", "🎸", "🎨", "💪", "🥗", "😴", "📝", "🚭", "💰", "🧹", "✍️", "🚴", "🎯"];
 
+// Paleta Habit Tracker: ciruela, turquesa, amarillo y coral.
 const COLOR_OPTIONS = [
-  "#ff6b35", // orange
-  "#8e2de2", // purple
-  "#2ecc71", // green
-  "#2196f3", // blue
-  "#f9c74f", // gold
-  "#ff2e63", // pink/red
-  "#00bcd4", // teal
-  "#e63946", // red
+  "#584053", // plum
+  "#8DC6BF", // teal
+  "#FCBC66", // gold
+  "#F97B4F", // coral
+  "#FF7F50", // coral claro
+  "#9B59B6", // morado
+  "#2ECC71", // verde
+  "#3DA5F4", // azul
 ];
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -49,9 +50,7 @@ function toDateKey(date) {
   return `${y}-${m}-${d}`;
 }
 
-function todayKey() {
-  return toDateKey(new Date());
-}
+function todayKey() { return toDateKey(new Date()); }
 
 function daysBetween(a, b) {
   const startOfA = new Date(a.getFullYear(), a.getMonth(), a.getDate());
@@ -80,23 +79,15 @@ function deleteHabit(id) {
 }
 
 function toggleCompletion(habit, dateKey) {
-  if (habit.completions[dateKey]) {
-    delete habit.completions[dateKey];
-  } else {
-    habit.completions[dateKey] = true;
-  }
+  if (habit.completions[dateKey]) delete habit.completions[dateKey];
+  else habit.completions[dateKey] = true;
   saveHabits();
 }
 
 function getCurrentStreak(habit) {
   let streak = 0;
   let cursor = new Date();
-
-  // Grace period: if today isn't done yet, start counting from yesterday.
-  if (!habit.completions[toDateKey(cursor)]) {
-    cursor = new Date(cursor.getTime() - DAY_MS);
-  }
-
+  if (!habit.completions[toDateKey(cursor)]) cursor = new Date(cursor.getTime() - DAY_MS);
   while (habit.completions[toDateKey(cursor)]) {
     streak++;
     cursor = new Date(cursor.getTime() - DAY_MS);
@@ -109,9 +100,7 @@ function getDaysSinceStart(habit) {
   return Math.max(daysBetween(start, new Date()), 0) + 1;
 }
 
-function getTotalCompletions(habit) {
-  return Object.keys(habit.completions).length;
-}
+function getTotalCompletions(habit) { return Object.keys(habit.completions).length; }
 
 function getMissedDays(habit) {
   const total = getDaysSinceStart(habit);
@@ -135,10 +124,7 @@ function renderFeed() {
     return;
   }
   emptyState.classList.add("hidden");
-
-  habits.forEach((habit) => {
-    feed.appendChild(buildHabitCard(habit));
-  });
+  habits.forEach((habit) => feed.appendChild(buildHabitCard(habit)));
 }
 
 function buildHabitCard(habit) {
@@ -164,7 +150,7 @@ function buildHabitCard(habit) {
   `;
 
   const grid = card.querySelector(".mini-grid");
-  buildGridCells(grid, habit, 63); // ~9 weeks of squares
+  buildGridCells(grid, habit, 63);
 
   card.querySelector('[data-action="toggle"]').addEventListener("click", (e) => {
     e.stopPropagation();
@@ -173,7 +159,6 @@ function buildHabitCard(habit) {
   });
 
   card.addEventListener("click", () => openDetail(habit.id));
-
   return card;
 }
 
@@ -218,7 +203,6 @@ function renderDetail() {
   document.getElementById("detailIcon").style.background = habit.color;
   document.getElementById("detailName").textContent = habit.name;
   document.getElementById("detailDesc").textContent = habit.description || "Sin descripción";
-
   document.getElementById("statStreak").textContent = getCurrentStreak(habit);
   document.getElementById("statSince").textContent = getDaysSinceStart(habit);
   document.getElementById("statCompletions").textContent = getTotalCompletions(habit);
@@ -270,9 +254,7 @@ function openModal() {
   document.getElementById("habitModal").classList.remove("hidden");
 }
 
-function closeModal() {
-  document.getElementById("habitModal").classList.add("hidden");
-}
+function closeModal() { document.getElementById("habitModal").classList.add("hidden"); }
 
 function buildIconPicker() {
   const el = document.getElementById("iconPicker");
